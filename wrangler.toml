@@ -1,0 +1,21 @@
+name = "ai-news-arabic"
+main = "./.cloudflare/worker-site/index.js"
+compatibility_date = "2023-08-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ai_news_db"
+database_id = "c42d0cc2-7333-4340-b21b-095a4b46ce9f"
+
+[site]
+bucket = "./.output/public"
+
+[env.production]
+workers_dev = false
+
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"

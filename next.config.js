@@ -1,21 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // إعدادات مبسطة تتوافق مع Next.js 15
   output: 'standalone',
+  distDir: '.next',
   
-  // استيراد ملفات التطبيق من مجلد src
-  experimental: {
-    outputFileTracingRoot: './',
-  },
+  // مسار مجلد المصدر - للإشارة إلى أن التطبيق في مجلد src
+  transpilePackages: ['src'],
   
-  // تحسينات الصور
+  // تمكين الصور
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
-  },
+    remotePatterns: [{
+      protocol: 'https',
+      hostname: '**'
+    }]
+  }
 }
 
 module.exports = nextConfig

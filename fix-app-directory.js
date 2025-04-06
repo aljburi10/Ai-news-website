@@ -4,55 +4,48 @@ const path = require('path');
 
 // التحقق من وجود مجلد app في المستوى الرئيسي
 if (!fs.existsSync(path.join(__dirname, 'app'))) {
+  console.log('مجلد app غير موجود. سيتم إنشاؤه ونسخ المحتوى من src/app');
+  
   // إنشاء مجلد app إذا لم يكن موجوداً
   fs.mkdirSync(path.join(__dirname, 'app'), { recursive: true });
   
   // نسخ محتويات src/app إلى app
   if (fs.existsSync(path.join(__dirname, 'src/app'))) {
-    // قراءة جميع الملفات والمجلدات في src/app
-    const srcAppContents = fs.readdirSync(path.join(__dirname, 'src/app'));
-    
-    // نسخ كل عنصر إلى المجلد الرئيسي app
-    srcAppContents.forEach(item => {
-      const srcPath = path.join(__dirname, 'src/app', item);
-      const destPath = path.join(__dirname, 'app', item);
-      
-      if (fs.lstatSync(srcPath).isDirectory()) {
-        // نسخ المجلد بشكل متكرر
-        fs.mkdirSync(destPath, { recursive: true });
-        const items = fs.readdirSync(srcPath);
-        items.forEach(subItem => {
-          const subSrcPath = path.join(srcPath, subItem);
-          const subDestPath = path.join(destPath, subItem);
-          
-          if (fs.lstatSync(subSrcPath).isDirectory()) {
-            // إذا كان مجلد فرعي، قم بإنشائه
-            fs.mkdirSync(subDestPath, { recursive: true });
-            // ثم انسخ ملفاته بشكل متكرر (يمكن تحسين هذا لاحقاً للمجلدات العميقة)
-            const subItems = fs.readdirSync(subSrcPath);
-            subItems.forEach(subSubItem => {
-              const finalSrcPath = path.join(subSrcPath, subSubItem);
-              const finalDestPath = path.join(subDestPath, subSubItem);
-              if (!fs.lstatSync(finalSrcPath).isDirectory()) {
-                fs.copyFileSync(finalSrcPath, finalDestPath);
-              }
-            });
-          } else {
-            // نسخ الملف
-            fs.copyFileSync(subSrcPath, subDestPath);
-          }
-        });
-      } else {
-        // نسخ الملف
-        fs.copyFileSync(srcPath, destPath);
+    // وظيفة لنسخ مجلد بشكل متكرر
+    function copyFolderRecursiveSync(source, target) {
+      // إنشاء المجلد الهدف إذا لم يكن موجوداً
+      if (!fs.existsSync(target)) {
+        fs.mkdirSync(target, { recursive: true });
       }
-    });
+      
+      // قراءة محتويات المجلد المصدر
+      const items = fs.readdirSync(source);
+      
+      // نسخ كل عنصر
+      items.forEach(item => {
+        const sourcePath = path.join(source, item);
+        const targetPath = path.join(target, item);
+        
+        // التحقق إذا كان العنصر مجلد
+        if (fs.lstatSync(sourcePath).isDirectory()) {
+          // نسخ المجلد بشكل متكرر
+          copyFolderRecursiveSync(sourcePath, targetPath);
+        } else {
+          // نسخ الملف
+          fs.copyFileSync(sourcePath, targetPath);
+        }
+      });
+    }
     
+    // بدء عملية النسخ
+    copyFolderRecursiveSync(path.join(__dirname, 'src/app'), path.join(__dirname, 'app'));
     console.log('تم نسخ محتويات src/app إلى مجلد app في المستوى الرئيسي');
   } else {
     console.error('مجلد src/app غير موجود!');
     process.exit(1);
   }
+} else {
+  console.log('مجلد app موجود بالفعل');
 }
 
 console.log('مجلد app جاهز للاستخدام');

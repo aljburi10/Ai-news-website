@@ -1,29 +1,51 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // تمكين الصور من المواقع الخارجية
+  reactStrictMode: true,
+  
+  // يحدد مسار مجلد التطبيق في src
+  srcDir: 'src',
+  
+  // تكوين مخرجات البناء
+  distDir: '.next',
+  
+  // تحويل مسارات الصور
   images: {
+    domains: ['ai-news-images.com', 'example.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**',
       },
     ],
-    formats: ['image/avif', 'image/webp'],
   },
-  // تعطيل تحسين الخطوط التلقائي لاستخدام الخطوط العربية المخصصة
-  optimizeFonts: false,
-  // تعطيل البرمجيات المضمنة (ضروري لبعض الميزات)
-  swcMinify: true,
-  // شفرة الدالة التي تتحقق من تاريخ تعديل الصفحة للتحديث
+  
+  // إعدادات I18n للدعم العربي
+  i18n: {
+    locales: ['ar'],
+    defaultLocale: 'ar',
+    localeDetection: true,
+  },
+  
+  // ضبط التخزين المؤقت
+  onDemandEntries: {
+    maxInactiveAge: 60 * 60 * 1000,
+    pagesBufferLength: 2,
+  },
+  
+  // تمكين التذييل والترويسة المضمنة
+  poweredByHeader: false,
+  
+  // دعم وضع التوجيه الصارم
+  strictMode: true,
+  
+  // الإعدادات التجريبية
   experimental: {
-    appDir: true,
-    serverComponentsExternalPackages: ['rss-parser'],
+    // تم نقل بعض الخيارات لتتوافق مع النسخة الجديدة
+    serverExternalPackages: ['@prisma/client'],
   },
-  // تكوين Webpack لمعالجة الحقول الخاصة
-  webpack: (config) => {
-    config.resolve.fallback = { fs: false, net: false, tls: false };
-    return config;
-  },
-};
+  
+  // تمكين ضغط Swc
+  swcMinify: true,
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

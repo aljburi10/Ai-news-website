@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare-app": "node fix-app-directory.js",
+    "dev": "npm run prepare-app && next dev",
+    "build": "npm run prepare-app && next build",
+    "start": "next start"
+  }
+}
